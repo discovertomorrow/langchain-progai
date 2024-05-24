@@ -1,0 +1,87 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools>=68",
+]
+
+[project]
+name = "langchain-progai"
+authors = [
+    { name = "prognostica GmbH", email = "info@prognostica.de" }
+]
+description = "LangChain-conform models for local, open source LLMs"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+]
+dynamic = [
+    "version",
+]
+dependencies = [
+    "langchain",
+    "langchain_core",
+    "jinja2",
+    "chromadb==0.4.22",
+    "pyyaml"
+]
+[project.optional-dependencies]
+dev = [
+    "ipython",
+    "ipykernel",
+    "ruff",
+    "pytest>=8.2.1",
+    "numpy>=1.26.4"
+]
+
+[project.urls]
+Homepage = "https://git.prognostica.de/prognostica/operations/exploration/langchain-progai" # TODO: update to github
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = 'langchain_progai.__version__' }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["langchain_progai*"]
+namespaces = false
+
+[tool.autopep8]
+max_line_length = 120
+
+[tool.ruff]
+target-version = "py311"
+fix = false
+respect-gitignore = false
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["W", "E", "B", "SIM"]
+ignore = ["SIM117"]  # Nested with statements
+preview = true
+
+[tool.ruff.lint.flake8-annotations]
+ignore-fully-untyped = true
+mypy-init-return = true
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.isort]
+line_length = 120
+multi_line_output = 1
+
+[tool.pyright]
+include = ["langchain_progai/**", "tests/**"]
+venv = ".venv"
+stubPath = ".stubs"
+pythonVersion = "3.11"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marked tests require an available backend (deselect with '-m \"not integration\"')",
+]
