@@ -5,3 +5,4 @@ tmp/
 venv
 build
 _*.ipynb
+langchain_progai/config/config.yaml

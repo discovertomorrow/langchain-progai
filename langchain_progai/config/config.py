@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def load_config(path: str | None = None) -> dict:
+def load_config(path: str | None = None) -> dict | None:
     """Utility function to load a langchain_progai configuration with model endpoints.
 
     The function takes an hierarchical approach. Without specification, the projects default_config.yaml is loaded.
@@ -34,11 +34,18 @@ def load_config(path: str | None = None) -> dict:
         else:
             return None
 
-    path = _existing(path) or _existing(os.getenv("LANGCHAIN_PROGAI_CONFIG"))
+    path = (
+        _existing(path) or
+        _existing(os.getenv("LANGCHAIN_PROGAI_CONFIG")) or
+        _existing(resources.files("langchain_progai") / "config/config.yaml")
+    )
 
     if not path:
-        # Fallback to default config.
-        path = resources.files("langchain_progai") / "config/default_config.yaml"
+        raise RuntimeError(
+            "Found no valid endpoint configuration. Provide path to configuration file as input parameter or "
+            "environment variable LANGCHAIN_PROGAI_CONFIG, "
+            "or create default config at langchain_progai/config/config.yaml"
+        )
 
     with open(path, 'r') as file:
         config = yaml.safe_load(file)
@@ -63,4 +70,5 @@ def get_endpoint(
     -------
     Endpoint url.
     """
-    return os.getenv(name_to_env_pattern(name) if name_to_env_pattern else name, load_config()["endpoints"][name])
+
+    return os.getenv(name_to_env_pattern(name) if name_to_env_pattern else name) or load_config()["endpoints"][name]

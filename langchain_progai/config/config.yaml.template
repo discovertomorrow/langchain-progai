@@ -1,0 +1,7 @@
+endpoints:
+  DOLPHIN: ""
+  ZEPHYR7B: ""
+  MIXTRAL: ""
+  LLAMA3: ""
+  EMBEDDING: ""
+  RERANKER_BGE_L: ""

@@ -41,7 +41,7 @@ from langchain_progai.config import get_endpoint
 class TextEmbeddingsInference(BaseModel, Embeddings):
     """From text-embeddings-inference api."""
 
-    endpoint: str = get_endpoint("EMBEDDING")
+    endpoint: str | None = None
     batch_size: int = 10
     session: Any
     api_key: Optional[SecretStr] = None
@@ -59,6 +59,8 @@ class TextEmbeddingsInference(BaseModel, Embeddings):
             }
         )
         values["session"] = session
+        # If no explizit set endpoint, fallback to configuration file or environment variable.
+        values["endpoint"] = values["endpoint"] or get_endpoint("EMBEDDING")
         return values
 
     def _embed_from_api(self, texts: List[str]) -> List[List[float]]:
