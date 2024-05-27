@@ -11,7 +11,7 @@ LangChain-ProgAI requires the configuration of model endpoints for interaction. 
 
 Alternatively, this can be done by defining a yaml configuration file within the package at `langchain_progai/config/config.yaml`, or setting an environment variable `LANGCHAIN_PROGAI_CONFIG` with the path pointing to your file. [This template file](langchain_progai/config/config.yaml.template) contains a blueprint with possible endpoints to configure.
 
-As an alternative (or addition), it is possible to set individual endpoints via environment variables, overwriting possible configurations in a configuration file. By naming convention, e.g. an corresponding environment variable for the `ZEPHYR7B` endpoint would be defined as `ENDPOINT_ZEPHYR7B`.
+As a further alternative (or addition), it is possible to set individual endpoints via environment variables, overwriting possible configurations in a configuration file. By naming convention, e.g. an corresponding environment variable for the `ZEPHYR7B` endpoint would be defined as `ENDPOINT_ZEPHYR7B`.
 
 Besides endpoint configuration, LangChain_ProgAI requires an environment variable `PROGAI_TOKEN` with a user or application specific token. The particular use of this token, e.g. for authentication or determination of model slots, depends on the LLM runtime in the backend (for details check out prognosticas [ProgAI middleware](https://github.com/discovertomorrow/progai-middleware/pkgs/container/progai-middleware)).
 
