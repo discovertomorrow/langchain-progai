@@ -1,6 +1,6 @@
 # LangChain-ProgAI
 
-![langchain_progai](.img / langchain_progai.png)
+![langchain_progai](.img/langchain_progai.png)
 
 Explorative python package of[prognostica](https: // www.prognostica.de / de/) providing[langchain](https: // github.com / langchain - ai / langchain / tree / master) - conform classes to utilize open source LLMs on local infrastructure.
 
