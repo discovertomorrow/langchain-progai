@@ -1,1 +1,1 @@
-include langchain_progai/config/default_config.yaml
+include langchain_progai/config/config.yaml
