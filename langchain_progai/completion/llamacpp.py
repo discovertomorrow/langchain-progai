@@ -35,7 +35,7 @@ import time
 import requests
 import aiohttp
 
-from langchain_core.pydantic_v1 import SecretStr, validator
+from langchain_core.pydantic_v1 import SecretStr, validator, root_validator
 from langchain_core.utils import convert_to_secret_str, get_from_env
 from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
 from langchain_core.language_models import BaseLLM, BaseLanguageModel
@@ -68,7 +68,7 @@ def _make_request_with_rate_limit_handling(request_function, *args, **kwargs):
 
 
 class _LlamaCppServerCommon(BaseLanguageModel):
-    base_url: str = get_endpoint("ZEPHYR7B")
+    base_url: str | None = None
     """Base url the model is hosted under."""
 
     mirostat: Optional[int] = 0
@@ -125,6 +125,12 @@ class _LlamaCppServerCommon(BaseLanguageModel):
     seed: int = -1
 
     api_key: Optional[SecretStr] = None
+
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no base_url is set explicitly, try to fallback to configuration file or environment variables."""
+        values["base_url"] = values["base_url"] or get_endpoint("ZEPHYR7B")
+        return values
 
     @validator("api_key", always=True)
     def api_key_must_exist(cls, v: Optional[SecretStr]) -> SecretStr:

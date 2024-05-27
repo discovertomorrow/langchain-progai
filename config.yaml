@@ -1,7 +1,0 @@
-endpoints:
-  DOLPHIN: http://10.0.0.136:8091/completion
-  ZEPHYR7B: "https://progai.prognostica.de/zephyr-7b-beta/"
-  MIXTRAL: "https://progai.prognostica.de/mixtral-instruct/"
-  LLAMA3: "https://progai.prognostica.de/llama3/"
-  EMBEDDING: "https://progai.prognostica.de/jina-embeddings-v2-base-de/"
-  RERANKER_BGE_L: "https://progai.prognostica.de/bge-reranker-large"

@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def load_config(path: str | None = None) -> dict:
+def load_config(path: str | None = None) -> dict | None:
     """Utility function to load a langchain_progai configuration with model endpoints.
 
     The function takes an hierarchical approach. Without specification, the projects default_config.yaml is loaded.

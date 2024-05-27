@@ -3,9 +3,10 @@ import requests
 import os
 import asyncio
 
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Dict
 
 from langchain.retrievers.document_compressors.base import BaseDocumentCompressor
+from langchain_core.pydantic_v1 import root_validator
 
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import Document
@@ -13,11 +14,17 @@ from langchain_progai.config import get_endpoint
 
 
 class RerankCompressor(BaseDocumentCompressor):
-    endpoint: str = get_endpoint("RERANKER_BGE_L")
+    endpoint: str | None = None
     top_k: int = 3
 
     headers = {"Content-Type": "application/json"}
     token = os.getenv("PROGAI_TOKEN", "")
+
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no endpoint is set explicitly, try to fallback to configuration file or environment variables."""
+        values["endpoint"] = values["endpoint"] or get_endpoint("RERANKER_BGE_L")
+        return values
 
     def _generate_headers(self):
         headers = self.headers

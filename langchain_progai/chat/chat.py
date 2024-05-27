@@ -1,9 +1,12 @@
 from langchain_progai.chat.llamacpp_chat import ChatLlamaCppServer
 from langchain_progai.config import get_endpoint
+from langchain_core.pydantic_v1 import root_validator
+
+from typing import Dict
 
 
 class ZephyrChat(ChatLlamaCppServer):
-    base_url: str = get_endpoint("ZEPHYR7B")
+    base_url: str | None = None
     stop: list[str] | None = ["</s>", "<|user|>", "<|assistant|>", "<|system|>"]
     jinja2_prompt_template: str = (
         "{% for m in messages %}"
@@ -14,9 +17,15 @@ class ZephyrChat(ChatLlamaCppServer):
         "<|assistant|>\n{{ start }}"
     )
 
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no base_url is set explicitly, try to fallback to configuration file or environment variables."""
+        values["base_url"] = values["base_url"] or get_endpoint("ZEPHYR7B")
+        return values
+
 
 class MixtralInstructChat(ChatLlamaCppServer):
-    base_url: str = get_endpoint("MIXTRAL")
+    base_url: str | None = None
     stop: list[str] | None = ["</s>", "[INST]", "[/INST]"]
     jinja2_prompt_template: str = (
         "{% for m in messages %}"
@@ -26,9 +35,15 @@ class MixtralInstructChat(ChatLlamaCppServer):
         "{% if start %} {{ start }}{% endif %}"
     )
 
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no base_url is set explicitly, try to fallback to configuration file or environment variables."""
+        values["base_url"] = values["base_url"] or get_endpoint("MIXTRAL")
+        return values
+
 
 class Llama3Chat(ChatLlamaCppServer):
-    base_url: str = get_endpoint("LLAMA3")
+    base_url: str | None = None
     stop: list[str] | None = [
         "</s>",
         "<s>",
@@ -43,3 +58,9 @@ class Llama3Chat(ChatLlamaCppServer):
         "{{ m.content }}<|eot_id|>{% endfor %}"
         "<|start_header_id|>assistant<|end_header_id|>\n\n{{ start }}"
     )
+
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no base_url is set explicitly, try to fallback to configuration file or environment variables."""
+        values["base_url"] = values["base_url"] or get_endpoint("LLAMA3")
+        return values

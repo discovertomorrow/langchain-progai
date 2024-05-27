@@ -29,11 +29,12 @@
 
 import json
 import jinja2
-from typing import Any, AsyncIterator, Iterator, List, Optional
+from typing import Any, AsyncIterator, Iterator, List, Optional, Dict
 
 from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
 from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
+from langchain_core.pydantic_v1 import root_validator
 
 from langchain_progai.completion.llamacpp import _LlamaCppServerCommon
 from .chat_model import ProgaiChatModel
@@ -53,7 +54,7 @@ def _stream_response_to_chat_generation_chunk(
 
 
 class ChatLlamaCppServer(ProgaiChatModel, _LlamaCppServerCommon):
-    base_url: str = get_endpoint("ZEPHYR7B")
+    base_url: str | None = None
     """Base url the model is hosted under."""
 
     jinja2_prompt_template: str = (
@@ -67,6 +68,12 @@ class ChatLlamaCppServer(ProgaiChatModel, _LlamaCppServerCommon):
 
     ai_message_start: str = ""
     """Force ai to start with specific string."""
+
+    @root_validator(allow_reuse=True)
+    def validate_endpoint(cls, values: Dict) -> Dict:
+        """If no base_url is set explicitly, try to fallback to configuration file or environment variables."""
+        values["base_url"] = values["base_url"] or get_endpoint("ZEPHYR7B")
+        return values
 
     @property
     def _llm_type(self) -> str:
