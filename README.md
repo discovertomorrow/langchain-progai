@@ -1,13 +1,13 @@
 # LangChain-ProgAI
 
-![langchain_progai](.img/langchain_progai.png)
+![langchain_progai](.img / langchain_progai.png)
 
-Explorative python package of [prognostica](https://www.prognostica.de/de/) providing [langchain](https://github.com/langchain-ai/langchain/tree/master)-conform classes to utilize open source LLMs on local infrastructure.
+Explorative python package of[prognostica](https: // www.prognostica.de / de/) providing[langchain](https: // github.com / langchain - ai / langchain / tree / master) - conform classes to utilize open source LLMs on local infrastructure.
 
 
-## Configuration
+# Configuration
 
-LangChain-ProgAI requires the configuration of model endpoints for interaction. This can be done explicitly at the various classes requiring an endpoint (e.g. `langchain_progai.chat.ZephyrChat`) by setting a `base_url` or `endpoint` parameter at initialization. 
+LangChain - ProgAI requires the configuration of model endpoints for interaction. This can be done explicitly at the various classes requiring an endpoint(e.g. `langchain_progai.chat.ZephyrChat`) by setting a `base_url` or `endpoint` parameter at initialization.
 
 Alternatively, this can be done by defining a yaml configuration file within the package at `langchain_progai/config/config.yaml`, or setting an environment variable `LANGCHAIN_PROGAI_CONFIG` with the path pointing to your file. [This template file](langchain_progai/config/config.yaml.template) contains a blueprint with possible endpoints to configure.
 
