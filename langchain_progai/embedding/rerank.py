@@ -41,7 +41,6 @@ class RerankCompressor(BaseDocumentCompressor):
         response = requests.post(self.endpoint, headers=self._generate_headers(), json=data)
 
         if response.status_code == 200:
-            print(response.json())
             return [(s["index"], s["score"]) for s in response.json()]
         else:
             print("Error:", response.status_code, response.text)
