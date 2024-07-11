@@ -74,10 +74,13 @@ class TextEmbeddingsInference(BaseModel, Embeddings):
             error occurs.
         """
         response = self.session.post(self.endpoint, json={"inputs": texts})
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise requests.HTTPError()
+        match response.status_code:
+            case 200:
+                return response.json()
+            case 401:
+                raise PermissionError("Invalid PROGAI_TOKEN.")
+            case _:
+                raise requests.HTTPError(response=response)
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """Get embeddings for a list of documents.

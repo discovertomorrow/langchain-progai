@@ -40,12 +40,13 @@ class RerankCompressor(BaseDocumentCompressor):
         data = {"query": query, "texts": [document.page_content for document in documents]}
         response = requests.post(self.endpoint, headers=self._generate_headers(), json=data)
 
-        if response.status_code == 200:
-            print(response.json())
-            return [(s["index"], s["score"]) for s in response.json()]
-        else:
-            print("Error:", response.status_code, response.text)
-            return None
+        match response.status_code:
+            case 200:
+                return [(s["index"], s["score"]) for s in response.json()]
+            case 401:
+                raise PermissionError("Invalid PROGAI_TOKEN.")
+            case _:
+                raise requests.HTTPError(response=response)
 
     def compress_documents(
         self,

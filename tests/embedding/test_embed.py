@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pytest
 
@@ -27,3 +28,13 @@ class TestTextEmbeddingsInference:
 
         # Assert
         assert np.allclose(embedded_1, embedded_2)
+
+    @pytest.mark.integration
+    def test_invoke___given_wrong_progai_token___raises_exception(cls, monkeypatch):
+        # Arrange
+        monkeypatch.setenv("PROGAI_TOKEN", "invalid_token")
+        model = embedding.TextEmbeddingsInference()
+
+        # Act & Assert
+        with pytest.raises(PermissionError):
+            model.embed_query("Who are you?")

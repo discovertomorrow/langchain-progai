@@ -186,8 +186,16 @@ class _LlamaCppServerCommon(BaseLanguageModel):
         )
 
         response.encoding = "utf-8"
-        if response.status_code != 200:
-            raise ValueError(f"LlamaCppServer call failed with status code {response.status_code}.")
+        match response.status_code:
+            case 200:
+                # succesful
+                pass
+            case 401:
+                # authentication error
+                raise PermissionError("Invalid PROGAI_TOKEN.")
+            case _:
+                # any other errors
+                raise ValueError(f"LlamaCppServer call failed with status code {response.status_code}.")
         for line in response.iter_lines(decode_unicode=True):
             if line.startswith("data: "):
                 yield line.replace("data: ", "", 1)
@@ -217,8 +225,16 @@ class _LlamaCppServerCommon(BaseLanguageModel):
                 },
                 json={"prompt": prompt, "stream": True, "cache_prompt": self.cache_prompt, **params},
             ) as response:
-                if response.status != 200:
-                    raise ValueError(f"LlamaCppServer call failed with status code {response.status}.")
+                match response.status_code:
+                    case 200:
+                        # succesful
+                        pass
+                    case 401:
+                        # authentication error
+                        raise PermissionError("Invalid PROGAI_TOKEN.")
+                    case _:
+                        # any other errors
+                        raise ValueError(f"LlamaCppServer call failed with status code {response.status_code}.")
                 async for line in response.content:
                     decoded = line.decode("utf-8")
                     if decoded.startswith("data: "):
