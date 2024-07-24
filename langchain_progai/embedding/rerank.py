@@ -22,8 +22,7 @@ class RerankCompressor(BaseDocumentCompressor):
     @root_validator(allow_reuse=True)
     def validate_endpoint(cls, values: Dict) -> Dict:
         """If no endpoint is set explicitly, try to fallback to configuration file or environment variables."""
-        values["endpoint"] = values["endpoint"] or get_endpoint(
-            "RERANKER_BGE_L")
+        values["endpoint"] = values["endpoint"] or get_endpoint("RERANKER_BGE_L")
         return values
 
     def _generate_headers(self):
@@ -39,14 +38,15 @@ class RerankCompressor(BaseDocumentCompressor):
     ):
         data = {"query": query, "texts": [
             document.page_content for document in documents]}
-        response = requests.post(
-            self.endpoint, headers=self._generate_headers(), json=data)
+        response = requests.post(self.endpoint, headers=self._generate_headers(), json=data)
 
-        if response.status_code == 200:
-            return [(s["index"], s["score"]) for s in response.json()]
-        else:
-            print("Error:", response.status_code, response.text)
-            return None
+        match response.status_code:
+            case 200:
+                return [(s["index"], s["score"]) for s in response.json()]
+            case 401:
+                raise PermissionError("Invalid PROGAI_TOKEN.")
+            case _:
+                raise requests.HTTPError(response=response)
 
     def compress_documents(
         self,
