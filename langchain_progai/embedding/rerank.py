@@ -36,8 +36,7 @@ class RerankCompressor(BaseDocumentCompressor):
         documents: Sequence[Document],
         query: str,
     ):
-        data = {"query": query, "texts": [
-            document.page_content for document in documents]}
+        data = {"query": query, "texts": [document.page_content for document in documents]}
         response = requests.post(self.endpoint, headers=self._generate_headers(), json=data)
 
         match response.status_code:
@@ -55,8 +54,7 @@ class RerankCompressor(BaseDocumentCompressor):
         callbacks: Optional[Callbacks] = None,
     ) -> Sequence[Document]:
         scores = self._get_scores_from_endpoint(documents, query)
-        top_k_scores = sorted(scores, key=lambda x: x[1], reverse=True)[
-            :self.top_k]
+        top_k_scores = sorted(scores, key=lambda x: x[1], reverse=True)[:self.top_k]
         result = [(score, documents[index]) for index, score in top_k_scores]
         return [doc for _, doc in result]
 
