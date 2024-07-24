@@ -1,4 +1,3 @@
-import heapq
 import requests
 import os
 import asyncio
@@ -55,9 +54,9 @@ class RerankCompressor(BaseDocumentCompressor):
         callbacks: Optional[Callbacks] = None,
     ) -> Sequence[Document]:
         scores = self._get_scores_from_endpoint(documents, query)
-        result = [(score, documents[index]) for index, score in scores]
-        ranked = heapq.nlargest(self.top_k, result)
-        return [doc for _, doc in ranked]
+        top_k_scores = sorted(scores, key=lambda x: x[1], reverse=True)[:self.top_k]
+        result = [(score, documents[index]) for index, score in top_k_scores]
+        return [doc for _, doc in result]
 
     async def acompress_documents(
         self,

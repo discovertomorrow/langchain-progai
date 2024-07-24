@@ -3,6 +3,7 @@ from langchain_core.messages import AIMessage
 
 import langchain_progai.chat as chat
 
+
 @pytest.mark.integration
 @pytest.mark.parametrize("cls", [
     chat.Llama3Chat,
